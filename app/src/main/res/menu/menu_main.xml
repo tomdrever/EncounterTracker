@@ -1,0 +1,20 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="tomdrever.encountertracker.MainActivity">
+    <item
+        android:id="@+id/action_clear"
+        android:orderInCategory="1"
+        android:title="@string/clear"
+        android:icon="@drawable/ic_clear_white"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="2"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_settings_white"
+        app:showAsAction="ifRoom"/>
+
+</menu>
