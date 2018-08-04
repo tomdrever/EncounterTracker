@@ -114,84 +114,32 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
         };
 
-        // OOF - fix this
-
         holder.hpDisplayList.removeAllViews();
 
         for (int i = 0; i < item.getNumber(); i++) {
             View view = LayoutInflater.from(context).inflate(
                     R.layout.item_hp_display, holder.hpDisplayList, false);
 
-            NpcInitiativeEntry.HpItem hpItemCurr = item.getHpItems().get(i);
+            final NpcInitiativeEntry.HpItem hpItemCurr = item.getHpItems().get(i);
 
             ((TextView) view.findViewById(R.id.hp)).setText(String.format(
                     Locale.ENGLISH, "%d/%d",
                     hpItemCurr.getCurrentHp(),
                     hpItemCurr.getMaxHp()));
 
-            view.setTag(i);
-
             // -- Take away hp --
             view.findViewById(R.id.decrease_hp).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(final View view) {
-
-                    getAmountToChangeBy("Reduce HP", new OnAmountConfirmedListener() {
-                        @Override
-                        public void OnAmountConfirmed(int amount) {
-                            View layoutView = (View) view.getParent();
-
-                            NpcInitiativeEntry.HpItem hpItem = item.getHpItems().get((int) layoutView.getTag());
-
-                            int toTakeAway = amount;
-
-                            // Cannot go above max
-                            if (hpItem.getCurrentHp() - toTakeAway < 0)
-                                toTakeAway = toTakeAway - hpItem.getCurrentHp();
-
-                            if (hpItem.getCurrentHp() == 0)
-                                toTakeAway = 0;
-
-                            hpItem.setCurrentHp(hpItem.getCurrentHp() - toTakeAway);
-
-                            ((TextView) holder.hpDisplayList.findViewById(R.id.hp)).setText(String.format(
-                                    Locale.ENGLISH, "%d/%d",
-                                    hpItem.getCurrentHp(),
-                                    hpItem.getMaxHp()));
-                        }
-                    });
+                public void onClick(View view) {
+                    reduceHp(hpItemCurr, view);
                 }
             });
 
             // -- Add hp --
             view.findViewById(R.id.increase_hp).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(final View view) {
-
-                    getAmountToChangeBy("Increase HP", new OnAmountConfirmedListener() {
-                        @Override
-                        public void OnAmountConfirmed(int amount) {
-                            View layoutView = (View) view.getParent();
-
-                            NpcInitiativeEntry.HpItem hpItem = item.getHpItems().get((int) layoutView.getTag());
-
-                            int toAdd = amount;
-
-                            // Cannot go above max
-                            if (hpItem.getCurrentHp() + toAdd > hpItem.getMaxHp())
-                                toAdd = hpItem.getMaxHp() - hpItem.getCurrentHp();
-
-                            if (hpItem.getCurrentHp() == hpItem.getMaxHp())
-                                toAdd = 0;
-
-                            hpItem.setCurrentHp(hpItem.getCurrentHp() + toAdd);
-
-                            ((TextView) holder.hpDisplayList.findViewById(R.id.hp)).setText(String.format(
-                                    Locale.ENGLISH, "%d/%d",
-                                    hpItem.getCurrentHp(),
-                                    hpItem.getMaxHp()));
-                        }
-                    });
+                public void onClick(View view) {
+                    increaseHp(hpItemCurr, view);
                 }
             });
 
@@ -212,7 +160,47 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         };
     }
 
-    private void getAmountToChangeBy(String change, final OnAmountConfirmedListener listener) {
+    private void reduceHp(NpcInitiativeEntry.HpItem hpItem, final View view) {
+
+        getAmountToChangeBy("Reduce HP", hpItem, new OnAmountConfirmedListener() {
+            @Override
+            public void OnAmountConfirmed(NpcInitiativeEntry.HpItem hpItem, int amount) {
+                View layoutView = (View) view.getParent();
+
+                int newHp = hpItem.getCurrentHp() - amount;
+
+                // Cannot go below 0
+                hpItem.setCurrentHp(newHp >= 0 ? newHp : 0);
+
+                ((TextView) layoutView.findViewById(R.id.hp)).setText(String.format(
+                        Locale.ENGLISH, "%d/%d",
+                        hpItem.getCurrentHp(),
+                        hpItem.getMaxHp()));
+            }
+        });
+    }
+
+    private void increaseHp(NpcInitiativeEntry.HpItem hpItem, final View view) {
+        getAmountToChangeBy("Increase HP", hpItem, new OnAmountConfirmedListener() {
+            @Override
+            public void OnAmountConfirmed(NpcInitiativeEntry.HpItem hpItem, int amount) {
+                View layoutView = (View) view.getParent();
+
+                int newHp = hpItem.getCurrentHp() + amount;
+
+                // Cannot go above max
+                hpItem.setCurrentHp(newHp <= hpItem.getMaxHp() ? newHp : hpItem.getMaxHp());
+
+                ((TextView) layoutView.findViewById(R.id.hp)).setText(String.format(
+                        Locale.ENGLISH, "%d/%d",
+                        hpItem.getCurrentHp(),
+                        hpItem.getMaxHp()));
+            }
+        });
+    }
+
+    private void getAmountToChangeBy(String change, final NpcInitiativeEntry.HpItem hpItem,
+                                     final OnAmountConfirmedListener listener) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle("Change");
         alertDialog.setMessage("Enter amount:");
@@ -232,7 +220,7 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         int amount = Integer.valueOf(input.getText().toString());
-                        listener.OnAmountConfirmed(amount);
+                        listener.OnAmountConfirmed(hpItem, amount);
                     }
                 });
 
@@ -246,8 +234,12 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         alertDialog.show();
     }
 
+    interface OnChangeHpClickedListener {
+        void OnHpChangeClicked(NpcInitiativeEntry.HpItem hpItem, View view);
+    }
+
     interface OnAmountConfirmedListener {
-        void OnAmountConfirmed(int amount);
+        void OnAmountConfirmed(NpcInitiativeEntry.HpItem hpItem, int amount);
     }
 
     @Override

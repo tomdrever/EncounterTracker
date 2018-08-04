@@ -18,9 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -114,24 +111,33 @@ public class MainActivity extends AppCompatActivity implements FabSpeedDial.OnMe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_clear:
-                for (int i = 0; i < initiativeListRecyclerView.getChildCount(); i++) {
-                    View view = initiativeListRecyclerView.getChildAt(i);
+                AlertDialog.Builder confirmDialogBuilder = new AlertDialog.Builder(this);
+                confirmDialogBuilder.setTitle("Confirm");
+                confirmDialogBuilder.setMessage("Are you sure you want to clear the current initiative list?");
 
-                    Animation animOut = AnimationUtils.loadAnimation(this, R.anim.slide_out_down);
-                    animOut.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
+                confirmDialogBuilder.setPositiveButton("Clear",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                initiativeList.clear();
+                                initiativeListAdapter.notifyDataSetChanged();
+                            }
+                        });
 
-                    view.startAnimation(animOut);
-                }
+                confirmDialogBuilder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
 
-                initiativeList.clear();
-                initiativeListAdapter.notifyDataSetChanged();
+                confirmDialogBuilder.create().show();
 
                 return true;
 
             case R.id.action_settings:
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-                alertDialog.setTitle("Settings");
-                alertDialog.setMessage("PC names for autocomplete:");
+                AlertDialog.Builder settingsDialogBuilder = new AlertDialog.Builder(this);
+                settingsDialogBuilder.setTitle("Settings");
+                settingsDialogBuilder.setMessage("PC names for autocomplete:");
 
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
                 HashSet<String> namesPref = (HashSet<String>) sharedPref.getStringSet("names", null);
@@ -153,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements FabSpeedDial.OnMe
                 input.setText(joinStringArray(names));
                 input.setPadding(16, 0, 16, 0);
 
-                alertDialog.setView(input);
+                settingsDialogBuilder.setView(input);
 
-                alertDialog.setPositiveButton("Save",
+                settingsDialogBuilder.setPositiveButton("Save",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 String s = input.getText().toString();
@@ -167,14 +173,14 @@ public class MainActivity extends AppCompatActivity implements FabSpeedDial.OnMe
                             }
                         });
 
-                alertDialog.setNegativeButton("Cancel",
+                settingsDialogBuilder.setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
                             }
                         });
 
-                alertDialog.show();
+                settingsDialogBuilder.show();
 
                 return true;
 

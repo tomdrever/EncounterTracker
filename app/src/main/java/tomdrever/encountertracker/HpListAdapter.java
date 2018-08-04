@@ -19,8 +19,8 @@ import tomdrever.encountertracker.data.NpcInitiativeEntry;
 
 public class HpListAdapter extends RecyclerView.Adapter<HpListAdapter.ViewHolder> {
 
-    ArrayList<NpcInitiativeEntry.HpItem> hpList;
-    Context context;
+    private ArrayList<NpcInitiativeEntry.HpItem> hpList;
+    private Context context;
 
     public HpListAdapter(Context context, ArrayList<NpcInitiativeEntry.HpItem> hpList) {
         this.context = context;
@@ -52,20 +52,15 @@ public class HpListAdapter extends RecyclerView.Adapter<HpListAdapter.ViewHolder
             holder.removeHpItem.setOnClickListener(null);
         }
 
-        if (hpList.get(i).getMaxHp() != 0) {
-            holder.editHpValue.setText(String.valueOf(hpList.get(i).getMaxHp()));
-        }
+        holder.editHpValue.setText(hpList.get(i).getMaxHp() != 0 ?
+                String.valueOf(hpList.get(i).getMaxHp()) : "");
 
         holder.editHpValue.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
