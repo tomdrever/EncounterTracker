@@ -25,13 +25,16 @@ import android.widget.EditText;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import tomdrever.encountertracker.OnDeleteClickedListener;
 import tomdrever.encountertracker.R;
 import tomdrever.encountertracker.data.BaseInitiativeEntry;
 import tomdrever.encountertracker.list.InitiativeListUpdatedListener;
 
 public abstract class BaseDialogFragment extends DialogFragment {
 
-    InitiativeListUpdatedListener listener;
+    InitiativeListUpdatedListener initiativeListUpdatedListener;
+
+    OnDeleteClickedListener onDeleteClickedListener;
 
     protected abstract String getTitle();
 
@@ -45,6 +48,8 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
     @BindView(R.id.entry_intiative_edit_text)
     EditText entryInitiative;
+
+    private Menu menu;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +94,10 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         getActivity().getMenuInflater().inflate(R.menu.menu_fragment, menu);
+
+        if (onDeleteClickedListener != null) {
+            menu.findItem(R.id.action_delete).setVisible(true);
+        }
     }
 
     @Override
@@ -109,10 +118,20 @@ public abstract class BaseDialogFragment extends DialogFragment {
         } else if (id == android.R.id.home) {
             dismiss();
             return true;
+        } else if (id == R.id.action_delete) {
+            if (onDeleteClickedListener != null) {
+                onDeleteClickedListener.onDeleteClicked(position);
+            }
+
+            dismiss();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    public void setOnDeleteClickedListener(OnDeleteClickedListener listener) {
+        this.onDeleteClickedListener = listener;
+    }
 
 
     @Override

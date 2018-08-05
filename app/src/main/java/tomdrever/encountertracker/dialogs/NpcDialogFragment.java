@@ -37,13 +37,13 @@ public class NpcDialogFragment extends BaseDialogFragment {
 
     public static NpcDialogFragment newInstance(InitiativeListUpdatedListener listener) {
         NpcDialogFragment fragment = new NpcDialogFragment();
-        fragment.listener = listener;
+        fragment.initiativeListUpdatedListener = listener;
         return fragment;
     }
 
     public static NpcDialogFragment newInstance(InitiativeListUpdatedListener listener, NpcInitiativeEntry entry, int position) {
         NpcDialogFragment fragment = new NpcDialogFragment();
-        fragment.listener = listener;
+        fragment.initiativeListUpdatedListener = listener;
         fragment.entry = entry;
         fragment.position = position;
         return fragment;
@@ -108,9 +108,9 @@ public class NpcDialogFragment extends BaseDialogFragment {
         }
 
         if (position == -1)
-            listener.onNewEntryAdded(new NpcInitiativeEntry(name, Integer.valueOf(initiative), npcHpList));
+            initiativeListUpdatedListener.onNewEntryAdded(new NpcInitiativeEntry(name, Integer.valueOf(initiative), npcHpList));
         else
-            listener.onEntryUpdated(new NpcInitiativeEntry(name, Integer.valueOf(initiative), npcHpList), position);
+            initiativeListUpdatedListener.onEntryUpdated(new NpcInitiativeEntry(name, Integer.valueOf(initiative), npcHpList), position);
 
         return true;
     }

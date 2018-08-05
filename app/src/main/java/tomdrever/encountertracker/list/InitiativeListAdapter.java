@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import tomdrever.encountertracker.MainActivity;
+import tomdrever.encountertracker.OnDeleteClickedListener;
 import tomdrever.encountertracker.R;
 import tomdrever.encountertracker.data.BaseInitiativeEntry;
 import tomdrever.encountertracker.data.NpcInitiativeEntry;
@@ -30,7 +31,7 @@ import tomdrever.encountertracker.dialogs.NpcDialogFragment;
 import tomdrever.encountertracker.dialogs.OtherEntryDialogFragment;
 import tomdrever.encountertracker.dialogs.PcDialogFragment;
 
-public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnDeleteClickedListener{
 
     private ArrayList<BaseInitiativeEntry> items;
     private Context context;
@@ -92,7 +93,9 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onClick(View view) {
                 // New OtherEntryDialogFragment
                 MainActivity activity = ((MainActivity) context);
-                activity.openFragment(OtherEntryDialogFragment.newInstance(activity, (OtherInitiativeEntry) items.get(position), position));
+                OtherEntryDialogFragment fragment = OtherEntryDialogFragment.newInstance(activity, (OtherInitiativeEntry) items.get(position), position);
+                fragment.setOnDeleteClickedListener(InitiativeListAdapter.this);
+                activity.openFragment(fragment);
             }
         };
     }
@@ -110,7 +113,9 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onClick(View view) {
                 // New NpcDialogFragment
                 MainActivity activity = ((MainActivity) context);
-                activity.openFragment(NpcDialogFragment.newInstance(activity, (NpcInitiativeEntry) items.get(position), position));
+                NpcDialogFragment fragment = NpcDialogFragment.newInstance(activity, (NpcInitiativeEntry) items.get(position), position);
+                fragment.setOnDeleteClickedListener(InitiativeListAdapter.this);
+                activity.openFragment(fragment);
             }
         };
 
@@ -155,7 +160,9 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onClick(View view) {
                 // New PcDialogFragment
                 MainActivity activity = ((MainActivity) context);
-                activity.openFragment(PcDialogFragment.newInstance(activity, (PcInitiativeEntry) items.get(position), position));
+                PcDialogFragment fragment = PcDialogFragment.newInstance(activity, (PcInitiativeEntry) items.get(position), position);
+                fragment.setOnDeleteClickedListener(InitiativeListAdapter.this);
+                activity.openFragment(fragment);
             }
         };
     }
@@ -234,8 +241,10 @@ public class InitiativeListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         alertDialog.show();
     }
 
-    interface OnChangeHpClickedListener {
-        void OnHpChangeClicked(NpcInitiativeEntry.HpItem hpItem, View view);
+    @Override
+    public void onDeleteClicked(int position) {
+        items.remove(position);
+        notifyDataSetChanged();
     }
 
     interface OnAmountConfirmedListener {

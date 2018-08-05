@@ -20,13 +20,13 @@ public class PcDialogFragment extends BaseDialogFragment {
 
     public static PcDialogFragment newInstance(InitiativeListUpdatedListener listener) {
         PcDialogFragment fragment = new PcDialogFragment();
-        fragment.listener = listener;
+        fragment.initiativeListUpdatedListener = listener;
         return fragment;
     }
 
     public static PcDialogFragment newInstance(InitiativeListUpdatedListener listener, PcInitiativeEntry entry, int position) {
         PcDialogFragment fragment = new PcDialogFragment();
-        fragment.listener = listener;
+        fragment.initiativeListUpdatedListener = listener;
         fragment.entry = entry;
         fragment.position = position;
         return fragment;
@@ -59,9 +59,9 @@ public class PcDialogFragment extends BaseDialogFragment {
         if (initiative.equals("")) return false;
 
         if (position == -1)
-            listener.onNewEntryAdded(new PcInitiativeEntry(name, Integer.valueOf(initiative)));
+            initiativeListUpdatedListener.onNewEntryAdded(new PcInitiativeEntry(name, Integer.valueOf(initiative)));
         else
-            listener.onEntryUpdated(new PcInitiativeEntry(name, Integer.valueOf(initiative)), position);
+            initiativeListUpdatedListener.onEntryUpdated(new PcInitiativeEntry(name, Integer.valueOf(initiative)), position);
 
         return true;
     }

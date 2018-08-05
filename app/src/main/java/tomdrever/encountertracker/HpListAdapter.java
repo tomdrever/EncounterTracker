@@ -66,9 +66,10 @@ public class HpListAdapter extends RecyclerView.Adapter<HpListAdapter.ViewHolder
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
 
-                hpList.get(holder.getAdapterPosition()).setMaxHp(
-                        text.equals("") ? 0 : Integer.valueOf(text)
-                );
+                NpcInitiativeEntry.HpItem hpItem = hpList.get(holder.getAdapterPosition());
+
+
+                hpItem.setMaxHp(text.equals("") ? 0 : Integer.valueOf(text));
             }
         });
     }

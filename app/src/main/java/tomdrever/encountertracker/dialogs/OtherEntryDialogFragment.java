@@ -23,13 +23,13 @@ public class OtherEntryDialogFragment extends BaseDialogFragment {
 
     public static OtherEntryDialogFragment newInstance(InitiativeListUpdatedListener listener) {
         OtherEntryDialogFragment fragment = new OtherEntryDialogFragment();
-        fragment.listener = listener;
+        fragment.initiativeListUpdatedListener = listener;
         return fragment;
     }
 
     public static OtherEntryDialogFragment newInstance(InitiativeListUpdatedListener listener, OtherInitiativeEntry entry, int position) {
         OtherEntryDialogFragment fragment = new OtherEntryDialogFragment();
-        fragment.listener = listener;
+        fragment.initiativeListUpdatedListener = listener;
         fragment.entry = entry;
         fragment.position = position;
         return fragment;
@@ -46,9 +46,9 @@ public class OtherEntryDialogFragment extends BaseDialogFragment {
         if (initiative.equals("")) return false;
 
         if (position == -1)
-            listener.onNewEntryAdded(new OtherInitiativeEntry(name, Integer.valueOf(initiative)));
+            initiativeListUpdatedListener.onNewEntryAdded(new OtherInitiativeEntry(name, Integer.valueOf(initiative)));
         else
-            listener.onEntryUpdated(new OtherInitiativeEntry(name, Integer.valueOf(initiative)), position);
+            initiativeListUpdatedListener.onEntryUpdated(new OtherInitiativeEntry(name, Integer.valueOf(initiative)), position);
 
         return true;
     }
