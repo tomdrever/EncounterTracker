@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import tomdrever.encountertracker.HpListAdapter;
+import tomdrever.encountertracker.list.HpListAdapter;
 import tomdrever.encountertracker.R;
 import tomdrever.encountertracker.data.NpcInitiativeEntry;
 import tomdrever.encountertracker.list.InitiativeListUpdatedListener;

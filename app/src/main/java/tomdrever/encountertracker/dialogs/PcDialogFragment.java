@@ -1,5 +1,6 @@
 package tomdrever.encountertracker.dialogs;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,6 +10,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import tomdrever.encountertracker.R;
 import tomdrever.encountertracker.data.PcInitiativeEntry;
 import tomdrever.encountertracker.list.InitiativeListUpdatedListener;
 
@@ -37,12 +43,12 @@ public class PcDialogFragment extends BaseDialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Set up autocomplete for PC names
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String[] names = sharedPref.getStringSet("names", null).toArray(new String[]{});
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        HashSet<String> names = (HashSet<String>) sharedPref.getStringSet(getString(R.string.names_pref), new HashSet<String>());
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line, names);
+                android.R.layout.simple_dropdown_item_1line, new ArrayList<>(names));
         AutoCompleteTextView acTextView = (AutoCompleteTextView) entryName;
         acTextView.setAdapter(adapter);
 

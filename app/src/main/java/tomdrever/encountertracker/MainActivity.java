@@ -1,6 +1,7 @@
 package tomdrever.encountertracker;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -139,15 +140,9 @@ public class MainActivity extends AppCompatActivity implements FabSpeedDial.OnMe
                 settingsDialogBuilder.setTitle("Settings");
                 settingsDialogBuilder.setMessage("PC names for autocomplete:");
 
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-                HashSet<String> namesPref = (HashSet<String>) sharedPref.getStringSet("names", null);
-
-                String[] names;
-
-                if (namesPref == null)
-                    names = new String[] {};
-                else
-                    names = namesPref.toArray(new String[]{});
+                // Get names from preferences, use an empty list if none exist
+                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                HashSet<String> names = (HashSet<String>) sharedPref.getStringSet(getString(R.string.names_pref), new HashSet<String>());
 
                 final EditText input = new EditText(this);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -156,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements FabSpeedDial.OnMe
 
                 input.setLayoutParams(lp);
                 input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-                input.setText(joinStringArray(names));
+                input.setText(joinStringArray(names.toArray(new String[]{})));
                 input.setPadding(16, 0, 16, 0);
 
                 settingsDialogBuilder.setView(input);
@@ -166,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements FabSpeedDial.OnMe
                             public void onClick(DialogInterface dialog, int which) {
                                 String s = input.getText().toString();
 
-                                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPref.edit();
                                 editor.putStringSet("names", new HashSet<>(Arrays.asList(s.replace(" ", "").split(","))));
                                 editor.apply();
@@ -194,18 +189,16 @@ public class MainActivity extends AppCompatActivity implements FabSpeedDial.OnMe
             StringBuilder builder = new StringBuilder();
 
             for (String n : array) {
-                builder.append(n).append(",");
+                builder.append(n).append(", ");
             }
 
-            builder.deleteCharAt(builder.length() - 1);
+            builder.delete(builder.length() - 2, builder.length());
 
             return builder.toString();
         } else {
             return "";
         }
     }
-
-
 
     @Override
     public void onMenuItemClick(FloatingActionButton miniFab, @Nullable TextView label, int itemId) {

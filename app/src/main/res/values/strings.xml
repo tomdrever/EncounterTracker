@@ -4,6 +4,7 @@
     <string name="initiative_hint">Initiative</string>
     <string name="entry_name_hint">Entry name</string>
     <string name="settings">Settings</string>
+    <string name="names_pref">names</string>
     <string name="clear">Clear</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>

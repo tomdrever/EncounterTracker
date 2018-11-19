@@ -1,4 +1,4 @@
-package tomdrever.encountertracker;
+package tomdrever.encountertracker.list;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import tomdrever.encountertracker.R;
 import tomdrever.encountertracker.data.NpcInitiativeEntry;
 
 public class HpListAdapter extends RecyclerView.Adapter<HpListAdapter.ViewHolder> {
